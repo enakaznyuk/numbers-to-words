@@ -1,5 +1,7 @@
 package org.example;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,6 +14,8 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class MainTest {
+
+    private static final Logger LOGGER = LogManager.getLogger(MainTest.class);
 
     static HelperClassForData prepareData() throws IOException {
 
@@ -31,20 +35,30 @@ public class MainTest {
 
     @ParameterizedTest
     @MethodSource("StringArgs")
-    void TestTwo(Integer[] numbers, String[] expectedResults){
+    void TestFirstAlgorithm(Integer[] numbers, String[] expectedResults){
 
         for(int i = 0; i < numbers.length; i++){
-            System.out.println(i);
-            System.out.println(" separator = " + BigDigitBuilder.numberSeparator(numbers[i]));
-            System.out.println(" Results = " + expectedResults[i]);
+            LOGGER.info(i);
+            LOGGER.info(" separator = " + BigDigitBuilder.numberSeparator(numbers[i]));
+            LOGGER.info(" Results = " + expectedResults[i]);
             Assertions.assertEquals(BigDigitBuilder.numberSeparator(numbers[i]).toString(), expectedResults[i]);
         }
 
     }
 
+    @ParameterizedTest
+    @MethodSource("StringArgs")
+    void TestSecondAlgorithm(Integer[] numbers, String[] expectedResults){
+
+        for(int i = 0; i < numbers.length; i++){
+            LOGGER.info(i);
+            LOGGER.info(" separator = " + BigDigitBuilder.newBuild(numbers[i]));
+            LOGGER.info(" Results = " + expectedResults[i]);
+            Assertions.assertEquals(BigDigitBuilder.newBuild(numbers[i]).toString(), expectedResults[i]);
+        }
+    }
+
     static Stream<Arguments> StringArgs() throws IOException {
         return Stream.of(Arguments.of(prepareData().getArrDataTest(), prepareData().getArrExpectedResult()));
     }
-
-
 }
