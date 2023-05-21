@@ -1,31 +1,29 @@
 package org.example;
 
+import com.ibm.icu.text.RuleBasedNumberFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.service.NumberStringBuilder;
+
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Scanner;
 
 
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        LOGGER.info("Hello world!");
+        LOGGER.info("Enter a positive integer: ");
+        Scanner scanner = new Scanner(System.in);
+        long pages = scanner.nextLong();
 
-        /*RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"),
-                RuleBasedNumberFormat.SPELLOUT);
-        System.out.println(nf.format(105947));*/
+        RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
+        System.out.println(nf.format(105947));
 
-        long testNumber = 11345;
-        System.out.println("testNumber = " + testNumber);
-        //System.out.println(testNumber % (int) Math.pow(10, 6));
-
-        //BigDigitBuilder.newBuild((int) testNumber, true);
-
-
-        LOGGER.info(BigDigitBuilder.newBuild( 123456789123456L));
-        LOGGER.info(BigDigitBuilder.numberSeparator((int) testNumber));
-        //System.out.println(BigDigitBuilder.newBuild( 123456789123456L));
-        //System.out.println(BigDigitBuilder.numberSeparator((int) testNumber));
+        LOGGER.info(NumberStringBuilder.secondAlgorithm(pages));
+        LOGGER.info(NumberStringBuilder.firstAlgorithm((int) pages));
     }
 }

@@ -1,4 +1,4 @@
-package org.example.exception;
+package org.example.domain.exception;
 
 public class InvalidNumberException extends RuntimeException{
 

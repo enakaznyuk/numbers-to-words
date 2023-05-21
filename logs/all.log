@@ -1,1 +1,3 @@
-2023-05-20 22:49:57.414 [main] INFO  org.example.Main - Hello world!
+2023-05-21 13:59:12.248 [main] INFO  org.example.Main - Enter a positive integer: 
+2023-05-21 13:59:15.243 [main] INFO  org.example.Main - сто двадцать три миллиона четыреста пятьдесят шесть тысяч семьсот восемьдесят девять
+2023-05-21 13:59:15.244 [main] INFO  org.example.Main - сто двадцать три миллиона четыреста пятьдесят шесть тысяч семьсот восемьдесят девять
