@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.example.domain.BigDigitBuilderFirstAlgorithm;
 import org.example.domain.BigDigitBuilderSecondAlgorithm;
 import org.example.domain.exception.InvalidNumberException;
+import org.example.service.NumberStringBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,8 +34,8 @@ public class NumberConverterTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
     void shouldHandleAnErrorLessThanZero(int numberToConvert) {
-        Assertions.assertThrows(InvalidNumberException.class, () -> BigDigitBuilderFirstAlgorithm.separationAlgorithmFirst(numberToConvert));
-        Assertions.assertThrows(InvalidNumberException.class, () -> BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(numberToConvert));
+        Assertions.assertThrows(InvalidNumberException.class, () -> NumberStringBuilder.firstAlgorithm(numberToConvert));
+        Assertions.assertThrows(InvalidNumberException.class, () -> NumberStringBuilder.secondAlgorithm(numberToConvert));
     }
 
     @ParameterizedTest
@@ -43,9 +44,9 @@ public class NumberConverterTest {
 
         for (int i = 0; i < numbers.length; i++) {
             LOGGER.info(i);
-            LOGGER.info(" separator = " + BigDigitBuilderFirstAlgorithm.separationAlgorithmFirst(numbers[i]));
+            LOGGER.info(" separator = " + NumberStringBuilder.firstAlgorithm(numbers[i]));
             LOGGER.info(" Results = " + expectedResults[i]);
-            Assertions.assertEquals(BigDigitBuilderFirstAlgorithm.separationAlgorithmFirst(numbers[i]).toString(), expectedResults[i]);
+            Assertions.assertEquals(NumberStringBuilder.firstAlgorithm(numbers[i]).toString(), expectedResults[i]);
         }
     }
 
@@ -55,9 +56,9 @@ public class NumberConverterTest {
 
         for (int i = 0; i < numbers.length; i++) {
             LOGGER.info(i);
-            LOGGER.info(" separator = " + BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(numbers[i]));
+            LOGGER.info(" separator = " + NumberStringBuilder.secondAlgorithm(numbers[i]));
             LOGGER.info(" Results = " + expectedResults[i]);
-            Assertions.assertEquals(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(numbers[i]).toString(), expectedResults[i]);
+            Assertions.assertEquals(NumberStringBuilder.secondAlgorithm(numbers[i]).toString(), expectedResults[i]);
         }
     }
 
