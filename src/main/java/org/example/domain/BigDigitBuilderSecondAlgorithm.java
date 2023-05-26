@@ -6,16 +6,68 @@ import org.example.domain.exception.InvalidNumberException;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static org.example.domain.HundredBuilder.convertHundredPartToString;
 
 public class BigDigitBuilderSecondAlgorithm {
 
-    private static final int DIGIT_DIVIDER = 1000;
+    private static final BigInteger DIGIT_DIVIDER = BigInteger.valueOf(1000);
 
     private static DataBaseOfWord dataBaseOfWord;
 
-    public static StringBuilder separationAlgorithmSecond(long number) throws IOException {
+    public static StringBuilder secondAlgorithm(BigDecimal number) throws IOException{
+
+        StringBuilder numberToString = new StringBuilder();
+        initDataBaseWord();
+
+        if (number.compareTo(BigDecimal.valueOf(0)) == 0)
+            return numberToString.append("ноль");
+
+        if (number.compareTo(BigDecimal.valueOf(0)) < 0)
+            numberToString.append("минус").append(" ");
+
+        // посчитали целые
+        // добавили слово целые
+        //посчитали десятые
+
+        return numberToString;
+    }
+
+    public static StringBuilder separationAlgorithmSecond(BigInteger number) throws IOException {
+
+        StringBuilder numberToString = new StringBuilder();
+        initDataBaseWord();
+
+        if (number.compareTo(BigInteger.valueOf(0)) == 0)
+            return numberToString.append("ноль");
+
+        if (number.compareTo(BigInteger.valueOf(0)) < 0) {
+            numberToString.append("минус").append(" ");
+            number = number.multiply(BigInteger.valueOf(-1));
+        }
+
+        double length = String.valueOf(number).length();
+
+        for (double numberOfDigits = Math.ceil(length / 3), dynamicNumberLength = (int) length; numberOfDigits >= 0; numberOfDigits--, dynamicNumberLength -= 3) {
+
+            if (number.compareTo(DIGIT_DIVIDER) < 0) {
+                numberToString.append(convertHundredPartToString(number.intValue(), true));
+                return numberToString;
+            }
+            if (number.compareTo(BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), 2))) < 0) {
+                numberToString.append(choiceOfSeparatorWordSecond(number.divide(DIGIT_DIVIDER).intValue(), 1, numberOfDigits - 1));
+                number = number.mod(DIGIT_DIVIDER);
+            } else {
+                numberToString.append(choiceOfSeparatorWordSecond((number.divide(BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), numberOfDigits - 1)))).intValue(), 2, numberOfDigits));
+                number = number.mod(BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), numberOfDigits - 1)));
+            }
+        }
+        return numberToString;
+    }
+
+    /*public static StringBuilder separationAlgorithmSecond(long number) throws IOException {
 
         StringBuilder numberToString = new StringBuilder();
         initDataBaseWord();
@@ -24,33 +76,33 @@ public class BigDigitBuilderSecondAlgorithm {
             throw new InvalidNumberException("Number must be > 0!");
         }
 
+        System.out.println("hello");
+
         double length = String.valueOf(number).length();
 
         for (double numberOfDigits = Math.ceil(length / 3), dynamicNumberLength = (int) length; numberOfDigits >= 0; numberOfDigits--, dynamicNumberLength -= 3) {
             if (number < DIGIT_DIVIDER) {
                 numberToString.append(convertHundredPartToString((int) number, true));
                 return numberToString;
-            } else if (dynamicNumberLength != 6 & dynamicNumberLength % 3 == 0) {
-                numberToString.append(choiceOfSeparatorWordSecond((long) (number / Math.pow(DIGIT_DIVIDER, numberOfDigits - 1)), 2, numberOfDigits));
-                number %= Math.pow(DIGIT_DIVIDER, numberOfDigits - 1);
+            }
+            if (number < Math.pow(DIGIT_DIVIDER, 2)) {
+                numberToString.append(choiceOfSeparatorWordSecond(number / DIGIT_DIVIDER, 1, numberOfDigits - 1));
+                number %= DIGIT_DIVIDER;
             } else {
-                if (number < Math.pow(DIGIT_DIVIDER, 2)) {
-                    numberToString.append(choiceOfSeparatorWordSecond(number / DIGIT_DIVIDER, 1, numberOfDigits - 1));
-                    number %= DIGIT_DIVIDER;
-                } else {
-                    numberToString.append(choiceOfSeparatorWordSecond((number / (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1)), 2, numberOfDigits));
-                    number %= (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1);
-                }
+                numberToString.append(choiceOfSeparatorWordSecond((number / (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1)), 2, numberOfDigits));
+                number %= (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1);
             }
         }
         return numberToString;
-    }
+    }*/
 
     private static StringBuilder choiceOfSeparatorWordSecond(long number, int counterOneAndTwo, double counterToken) {
 
         StringBuilder numberToString = new StringBuilder();
         boolean isSeparatorOfOneAndTwo = true;
 
+        //можно заменить свитчь на что то более читабельное
+        // всегда фолс если дело касается дробей
         switch (counterOneAndTwo) {
             case 1:
                 if (number % 10 <= 2)

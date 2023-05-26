@@ -4,6 +4,7 @@ import org.example.domain.BigDigitBuilderFirstAlgorithm;
 import org.example.domain.BigDigitBuilderSecondAlgorithm;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 public class NumberStringBuilder {
 
@@ -14,7 +15,7 @@ public class NumberStringBuilder {
         return stringBuilder;
     }
 
-    public static StringBuilder secondAlgorithm(long number) throws IOException {
+    public static StringBuilder secondAlgorithm(BigInteger number) throws IOException {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number));
