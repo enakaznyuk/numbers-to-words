@@ -22,10 +22,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         //long pages = scanner.nextLong();
         BigDecimal bigDecimal = scanner.nextBigDecimal();
-        BigDecimal bigDecimal1 = bigDecimal.remainder(BigDecimal.ONE);
-        System.out.println("bigDecimal = " + bigDecimal);
-        System.out.println("bigDecimal1 = " + bigDecimal1);
-        RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
+        //BigDecimal bigDecimal1 = bigDecimal.remainder(BigDecimal.ONE);
+        /*RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
         LOGGER.info(nf.format(bigDecimal));
         try {
             System.out.println("try block");
@@ -36,9 +34,7 @@ public class Main {
             bigDecimal1 = bigDecimal.remainder(BigDecimal.ONE);
             bigDecimal = bigDecimal1.movePointRight(bigDecimal1.precision());
             LOGGER.info(NumberStringBuilder.secondAlgorithm(bigDecimal.toBigInteger()));
-        }
-
-        // if (bigDecimal.subtract(bigDecimal.remainder((BigDecimal.ONE))) == 0)
+        }*/
 
         /*while (bigDecimal.compareTo(BigDecimal.valueOf(0)) != 0){
             bigDecimal = scanner.nextBigDecimal();
@@ -51,8 +47,14 @@ public class Main {
 
         /*BigInteger bigInteger = scanner.nextBigInteger();
         RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
-        LOGGER.info(nf.format(bigInteger));
-        LOGGER.info(NumberStringBuilder.secondAlgorithm(bigInteger));*/
+        LOGGER.info(nf.format(bigInteger));*/
+        while (bigDecimal.compareTo(BigDecimal.valueOf(0)) != 0){
+            bigDecimal = scanner.nextBigDecimal();
+            RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
+            LOGGER.info(nf.format(bigDecimal));
+            LOGGER.info(NumberStringBuilder.secondAlgorithm(bigDecimal));
+        }
+        //LOGGER.info(NumberStringBuilder.secondAlgorithm(bigDecimal));
         //LOGGER.info(NumberStringBuilder.firstAlgorithm((int) pages));
 
         /*

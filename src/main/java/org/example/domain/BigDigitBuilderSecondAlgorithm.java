@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import static org.example.domain.HundredBuilder.convertHundredPartToString;
 
@@ -35,7 +36,7 @@ public class BigDigitBuilderSecondAlgorithm {
         return numberToString;
     }
 
-    public static StringBuilder separationAlgorithmSecond(BigInteger number) throws IOException {
+    public static StringBuilder separationAlgorithmSecond(BigInteger number, boolean isSeparatorOfOneAndTwo) throws IOException {
 
         StringBuilder numberToString = new StringBuilder();
         initDataBaseWord();
@@ -53,7 +54,7 @@ public class BigDigitBuilderSecondAlgorithm {
         for (double numberOfDigits = Math.ceil(length / 3), dynamicNumberLength = (int) length; numberOfDigits >= 0; numberOfDigits--, dynamicNumberLength -= 3) {
 
             if (number.compareTo(DIGIT_DIVIDER) < 0) {
-                numberToString.append(convertHundredPartToString(number.intValue(), true));
+                numberToString.append(convertHundredPartToString(number.intValue(), isSeparatorOfOneAndTwo));
                 return numberToString;
             }
             if (number.compareTo(BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), 2))) < 0) {
@@ -101,8 +102,6 @@ public class BigDigitBuilderSecondAlgorithm {
         StringBuilder numberToString = new StringBuilder();
         boolean isSeparatorOfOneAndTwo = true;
 
-        //можно заменить свитчь на что то более читабельное
-        // всегда фолс если дело касается дробей
         switch (counterOneAndTwo) {
             case 1:
                 if (number % 10 <= 2)
@@ -126,6 +125,9 @@ public class BigDigitBuilderSecondAlgorithm {
         int secondPlace = 1;
         int thirdPlace = 2;
 
+        //можно передавать тысяч миллион миллиард и тд, а ниже вместо токенов добавлять нужные окончания и всё(словарь станет читабельнее)
+
+        // вот тут короче нужное мне деление на 11, разделительные числа и тд
         if (number / 10 == 1) {
             numberToString.append(dataBaseOfWord.getArrDataBaseOfWord()[firstPlace + 3 * counterToken]);
         } else if (number % 10 == 1) {
