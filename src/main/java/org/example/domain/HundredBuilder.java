@@ -49,13 +49,12 @@ public class HundredBuilder {
                 numberToString.append(" ").append(convertDigitPartToString(number % 10, isSeparatorOfOneAndTwo));
             }
         }
-
         return numberToString;
     }
 
     private static String convertDigitPartToString(int number, boolean isSeparatorOfOneAndTwo) {
 
-        if (!isSeparatorOfOneAndTwo)
+        if (!isSeparatorOfOneAndTwo & number <= 2)
             return TOKENS_DIGITAL_BIG[number + BASE_VALUE];
         return TOKENS_DIGITAL[number + BASE_VALUE];
     }

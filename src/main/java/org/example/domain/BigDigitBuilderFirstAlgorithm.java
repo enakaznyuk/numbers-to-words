@@ -90,17 +90,17 @@ public class BigDigitBuilderFirstAlgorithm {
 
     private static StringBuilder separatorWord(int number, String[] TOKENS) {
 
-        StringBuilder numberToString = new StringBuilder();
+        StringBuilder wordsBetweenNumberPosition = new StringBuilder();
 
         if (number / 10 == 1) {
-            numberToString.append(TOKENS[0]);
+            wordsBetweenNumberPosition.append(TOKENS[0]);
         } else if (number % 10 == 1) {
-            numberToString.append(TOKENS[2]);
+            wordsBetweenNumberPosition.append(TOKENS[2]);
         } else if (number % 10 > 4 || number % 10 == 0) {
-            numberToString.append(TOKENS[0]);
+            wordsBetweenNumberPosition.append(TOKENS[0]);
         } else if (number % 10 > 1) {
-            numberToString.append(TOKENS[1]);
+            wordsBetweenNumberPosition.append(TOKENS[1]);
         }
-        return numberToString;
+        return wordsBetweenNumberPosition;
     }
 }

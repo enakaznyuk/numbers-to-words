@@ -1,95 +1,83 @@
 package org.example.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.example.domain.exception.InvalidNumberException;
-
-import java.io.File;
-import java.io.IOException;
+import java.math.BigInteger;
 
 import static org.example.domain.HundredBuilder.convertHundredPartToString;
 
 public class BigDigitBuilderSecondAlgorithm {
 
-    private static final int DIGIT_DIVIDER = 1000;
+    private static final BigInteger DIGIT_DIVIDER = BigInteger.valueOf(1000);
 
-    private static DataBaseOfWord dataBaseOfWord;
+    private static final DataBaseOfWord dataBaseOfWord = DataBaseOfWordsInitializer.getDataBaseOfWord();
 
-    public static StringBuilder separationAlgorithmSecond(long number) throws IOException {
+    public static StringBuilder separationAlgorithmIntegers(BigInteger number, boolean isThereAFractionalPartOfTheNumber) {
 
         StringBuilder numberToString = new StringBuilder();
-        initDataBaseWord();
 
-        if (number <= 0) {
-            throw new InvalidNumberException("Number must be > 0!");
-        }
+        if (number.compareTo(BigInteger.valueOf(0)) == 0)
+            return numberToString.append("ноль");
 
         double length = String.valueOf(number).length();
 
-        for (double numberOfDigits = Math.ceil(length / 3), dynamicNumberLength = (int) length; numberOfDigits >= 0; numberOfDigits--, dynamicNumberLength -= 3) {
-            if (number < DIGIT_DIVIDER) {
-                numberToString.append(convertHundredPartToString((int) number, true));
+        for (double numberOfDigits = Math.ceil(length / 3); numberOfDigits >= 0; numberOfDigits--) {
+
+            if (number.compareTo(DIGIT_DIVIDER) < 0) {
+                numberToString.append(convertHundredPartToString(number.intValue(), isThereAFractionalPartOfTheNumber));
                 return numberToString;
-            } else if (dynamicNumberLength != 6 & dynamicNumberLength % 3 == 0) {
-                numberToString.append(choiceOfSeparatorWordSecond((long) (number / Math.pow(DIGIT_DIVIDER, numberOfDigits - 1)), 2, numberOfDigits));
-                number %= Math.pow(DIGIT_DIVIDER, numberOfDigits - 1);
+            }
+            if (number.compareTo(BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), 2))) < 0) {
+                numberToString.append(SeparatorWordsPool(number.divide(DIGIT_DIVIDER).intValue(), true, numberOfDigits - 1));
+                number = number.mod(DIGIT_DIVIDER);
             } else {
-                if (number < Math.pow(DIGIT_DIVIDER, 2)) {
-                    numberToString.append(choiceOfSeparatorWordSecond(number / DIGIT_DIVIDER, 1, numberOfDigits - 1));
-                    number %= DIGIT_DIVIDER;
-                } else {
-                    numberToString.append(choiceOfSeparatorWordSecond((number / (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1)), 2, numberOfDigits));
-                    number %= (long) Math.pow(DIGIT_DIVIDER, numberOfDigits - 1);
-                }
+                BigInteger partsOfNumberOverAMillion = BigInteger.valueOf((long) Math.pow(DIGIT_DIVIDER.doubleValue(), numberOfDigits - 1));
+                numberToString.append(SeparatorWordsPool((number.divide(partsOfNumberOverAMillion)).intValue(), false, numberOfDigits));
+                number = number.mod(partsOfNumberOverAMillion);
             }
         }
         return numberToString;
     }
 
-    private static StringBuilder choiceOfSeparatorWordSecond(long number, int counterOneAndTwo, double counterToken) {
+    private static StringBuilder SeparatorWordsPool(long number, boolean isSeparatorOfOneAndTwo, double counterToken) {
 
-        StringBuilder numberToString = new StringBuilder();
-        boolean isSeparatorOfOneAndTwo = true;
+        StringBuilder wordBetweenNumberPosition = new StringBuilder();
 
-        switch (counterOneAndTwo) {
-            case 1:
-                if (number % 10 <= 2)
-                    isSeparatorOfOneAndTwo = false;
-                numberToString.append(convertHundredPartToString((int) number, isSeparatorOfOneAndTwo)).append(" ");
-                numberToString.append(separatorWord(number % 100, (int) (counterToken - 1))).append(" ");
-                break;
-            case 2:
-                numberToString.append(convertHundredPartToString((int) number, true)).append(" ");
-                numberToString.append(separatorWord(number % 100, (int) (counterToken - 2))).append(" ");
-                break;
+        if (isSeparatorOfOneAndTwo) {
+            if (number % 10 <= 2)
+                isSeparatorOfOneAndTwo = false;
+            wordBetweenNumberPosition.append(convertHundredPartToString((int) number, isSeparatorOfOneAndTwo)).append(" ");
+            wordBetweenNumberPosition.append(choiceOfSeparatingWordThousand(number % 100)).append(" ");
+        } else {
+            wordBetweenNumberPosition.append(convertHundredPartToString((int) number, true)).append(" ");
+            wordBetweenNumberPosition.append(choiceOfSeparatingWordBetweenBigNumberPosition(number % 100, (int) (counterToken - 2))).append(" ");
         }
-        return numberToString;
+        return wordBetweenNumberPosition;
     }
 
-    private static StringBuilder separatorWord(long number, int counterToken) {
+    private static StringBuilder choiceOfSeparatingWordBetweenBigNumberPosition(long number, int counterToken) {
 
-        StringBuilder numberToString = new StringBuilder();
+        StringBuilder wordBetweenBigNumberPosition = new StringBuilder();
 
-        int firstPlace = 0;
-        int secondPlace = 1;
-        int thirdPlace = 2;
-
-        if (number / 10 == 1) {
-            numberToString.append(dataBaseOfWord.getArrDataBaseOfWord()[firstPlace + 3 * counterToken]);
+        if (number / 10 == 1 || number % 10 > 4 || number % 10 == 0) {
+            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append("ов");
         } else if (number % 10 == 1) {
-            numberToString.append(dataBaseOfWord.getArrDataBaseOfWord()[thirdPlace + 3 * counterToken]);
-        } else if (number % 10 > 4 || number % 10 == 0) {
-            numberToString.append(dataBaseOfWord.getArrDataBaseOfWord()[firstPlace + 3 * counterToken]);
+            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]);
         } else if (number % 10 > 1) {
-            numberToString.append(dataBaseOfWord.getArrDataBaseOfWord()[secondPlace + 3 * counterToken]);
+            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append("а");
         }
-        return numberToString;
+        return wordBetweenBigNumberPosition;
     }
 
-    private static void initDataBaseWord() throws IOException {
-        File fileWithTestData = new File("./src/main/resources/DataOfWords.json");
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        dataBaseOfWord = mapper.readValue(fileWithTestData, DataBaseOfWord.class);
+    private static StringBuilder choiceOfSeparatingWordThousand(long number) {
+
+        StringBuilder thousandWord = new StringBuilder();
+
+        if (number / 10 == 1 || number % 10 > 4 || number % 10 == 0) {
+            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]);
+        } else if (number % 10 == 1) {
+            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append("а");
+        } else if (number % 10 > 1) {
+            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append("и");
+        }
+        return thousandWord;
     }
 }

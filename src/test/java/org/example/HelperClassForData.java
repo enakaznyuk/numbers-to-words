@@ -1,13 +1,14 @@
 package org.example;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class HelperClassForData {
 
-    private Integer[] arrDataTest;
+    private BigDecimal[] arrDataTest;
     private String[] arrExpectedResult;
 
-    public Integer[] getArrDataTest() {
+    public BigDecimal[] getArrDataTest() {
         return arrDataTest;
     }
 
