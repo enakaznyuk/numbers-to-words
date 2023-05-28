@@ -17,9 +17,6 @@ public class Main {
         LOGGER.info("Enter a positive integer: ");
         Scanner scanner = new Scanner(System.in);
         BigDecimal bigDecimal = scanner.nextBigDecimal();
-        while (bigDecimal.compareTo(BigDecimal.valueOf(0)) != 0) {
-            bigDecimal = scanner.nextBigDecimal();
-            LOGGER.info(NumberStringBuilder.secondAlgorithmBuilder(bigDecimal));
-        }
+        LOGGER.info(NumberStringBuilder.secondAlgorithmBuilder(bigDecimal));
     }
 }

@@ -8,6 +8,8 @@ public class BigDigitBuilderSecondAlgorithm {
 
     private static final BigInteger DIGIT_DIVIDER = BigInteger.valueOf(1000);
 
+    private static final String[] END_INTEGER_WORDS = new String[]{"ов", "а", "и"};
+
     private static final DataBaseOfWord dataBaseOfWord = DataBaseOfWordsInitializer.getDataBaseOfWord();
 
     public static StringBuilder separationAlgorithmIntegers(BigInteger number, boolean isThereAFractionalPartOfTheNumber) {
@@ -58,11 +60,11 @@ public class BigDigitBuilderSecondAlgorithm {
         StringBuilder wordBetweenBigNumberPosition = new StringBuilder();
 
         if (number / 10 == 1 || number % 10 > 4 || number % 10 == 0) {
-            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append("ов");
+            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append(END_INTEGER_WORDS[0]);
         } else if (number % 10 == 1) {
             wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]);
         } else if (number % 10 > 1) {
-            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append("а");
+            wordBetweenBigNumberPosition.append(dataBaseOfWord.getArrDataBaseOfWord()[counterToken]).append(END_INTEGER_WORDS[1]);
         }
         return wordBetweenBigNumberPosition;
     }
@@ -74,9 +76,9 @@ public class BigDigitBuilderSecondAlgorithm {
         if (number / 10 == 1 || number % 10 > 4 || number % 10 == 0) {
             thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]);
         } else if (number % 10 == 1) {
-            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append("а");
+            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append(END_INTEGER_WORDS[1]);
         } else if (number % 10 > 1) {
-            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append("и");
+            thousandWord.append(dataBaseOfWord.getArrDataBaseOfWord()[0]).append(END_INTEGER_WORDS[2]);
         }
         return thousandWord;
     }

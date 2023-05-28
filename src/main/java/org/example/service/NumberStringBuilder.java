@@ -13,6 +13,7 @@ public class NumberStringBuilder {
     private static final DataBaseOfWord dataBaseOfWord = DataBaseOfWordsInitializer.getDataBaseOfWord();
 
     private static final String[] TOKENS_WHOLE = new String[]{"целая", "целых"};
+    private static final String[] END_FRACTIONAL_WORDS = new String[]{"ых", "ая"};
 
     public static StringBuilder firstAlgorithmBuilder(int number) {
 
@@ -28,13 +29,16 @@ public class NumberStringBuilder {
         number = checkForMinus(number, processedNumber);
 
         try {
+            isTheDatabaseBigEnough(number.toBigIntegerExact(), true);
             processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmIntegers(number.toBigIntegerExact(), true));
         } catch (ArithmeticException e) {
+            isTheDatabaseBigEnough(number.toBigInteger(), true);
             processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmIntegers(number.toBigInteger(), false)).append(" ");
 
             choiceOfWordsForIntegerAndFractionalParts(number, processedNumber, true);
             number = preparingANumberForFractionalProcessing(number);
 
+            isTheDatabaseBigEnough(number.toBigInteger(), false);
             processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmIntegers(number.toBigInteger(), false)).append(" ");
             choiceOfWordsForIntegerAndFractionalParts(number, processedNumber, false);
         }
@@ -59,12 +63,12 @@ public class NumberStringBuilder {
 
         if (number.divide(BigInteger.TEN).intValue() == 1) {
             fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
-            return fractionalSize.append("ых");
+            return fractionalSize.append(END_FRACTIONAL_WORDS[0]);
         } else if (number.mod(BigInteger.TEN).intValue() == 1) {
             fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
-            return fractionalSize.append("ая");
+            return fractionalSize.append(END_FRACTIONAL_WORDS[1]);
         }
-        return fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]).append("ых");
+        return fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]).append(END_FRACTIONAL_WORDS[0]);
     }
 
     private static BigDecimal checkForMinus(BigDecimal number, StringBuilder minus) {
@@ -104,5 +108,18 @@ public class NumberStringBuilder {
         number = number.movePointRight(length);
 
         return number;
+    }
+
+    private static void isTheDatabaseBigEnough(BigInteger number, boolean isIntegerOrFractionalPartOfDatabase){
+
+        int length = number.toString().length();
+        if(isIntegerOrFractionalPartOfDatabase){
+            if(length > dataBaseOfWord.getArrDataBaseOfWord().length)
+                throw new RuntimeException("Database of integers is too short");
+        } else {
+            if(length > dataBaseOfWord.getArrDataBaseOfPartWord().length)
+                throw new RuntimeException("Database of fractional part is too short");
+        }
+
     }
 }
