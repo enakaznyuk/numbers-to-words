@@ -49,7 +49,6 @@ public class HundredBuilder {
                 numberToString.append(" ").append(convertDigitPartToString(number % 10, isSeparatorOfOneAndTwo));
             }
         }
-
         return numberToString;
     }
 
