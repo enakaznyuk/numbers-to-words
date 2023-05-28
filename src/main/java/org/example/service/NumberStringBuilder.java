@@ -13,8 +13,6 @@ import java.math.BigInteger;
 
 public class NumberStringBuilder {
 
-    private static BigDigitBuilderSecondAlgorithm bigDigitBuilderSecondAlgorithm;
-
     private static DataBaseOfWord dataBaseOfWord;
 
     private static final String[] TOKENS_WHOLE = new String[]{"целая", "целых"};
@@ -28,70 +26,95 @@ public class NumberStringBuilder {
 
     public static StringBuilder secondAlgorithm(BigDecimal number) throws IOException {
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder processedNumber = new StringBuilder();
 
         initDataBaseWord();
 
+        number = checkForMinus(number, processedNumber);
+
         try {
-            stringBuilder.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigIntegerExact(), true));
+            processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigIntegerExact(), true));
         } catch (ArithmeticException e){
-            stringBuilder.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigInteger(), false)).append(" ");
+            processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigInteger(), false)).append(" ");
 
-            if (number.toBigInteger().bitCount() < 100)
-                stringBuilder.append(choiceWholeWord(number.toBigInteger())).append(" ");
-            else
-                stringBuilder.append(choiceWholeWord(number.toBigInteger().shiftLeft(2))).append(" ");
+            choiceOfWordsForIntegerAndFractionalParts(number, processedNumber, true);
+            number = preparingANumberForFractionalProcessing(number);
 
-            number = number.stripTrailingZeros();
-            number = number.remainder(BigDecimal.ONE);
-            number = number.movePointRight(number.scale());
-            stringBuilder.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigInteger(), false));
-
-            System.out.println(number.scale());
-
-            if (number.toBigInteger().bitCount() < 100)
-                stringBuilder.append(choicePartWord(number.toBigInteger(), number.scale() - 1)).append(" ");
-            else
-                stringBuilder.append(choicePartWord(number.toBigInteger().shiftLeft(2), number.scale() - 1)).append(" ");
-
+            processedNumber.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number.toBigInteger(), false)).append(" ");
+            choiceOfWordsForIntegerAndFractionalParts(number, processedNumber, false);
         }
-        //stringBuilder.append(BigDigitBuilderSecondAlgorithm.separationAlgorithmSecond(number, true));
-        return stringBuilder;
+        return processedNumber;
     }
 
     private static StringBuilder choiceWholeWord(BigInteger number){
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder wordBetweenIntegerAndFractionalParts = new StringBuilder();
 
-        if (number.divide(BigInteger.valueOf(10)).intValue() == 1) {
-            return stringBuilder.append(TOKENS_WHOLE[1]);
-        } else if (number.mod(BigInteger.valueOf(10)).intValue() == 1) {
-            return stringBuilder.append(TOKENS_WHOLE[0]);
-        }
-        return stringBuilder.append(TOKENS_WHOLE[1]);
+        if (number.divide(BigInteger.TEN).intValue() == 1)
+            return wordBetweenIntegerAndFractionalParts.append(TOKENS_WHOLE[1]);
+        else if (number.mod(BigInteger.TEN).intValue() == 1)
+            return wordBetweenIntegerAndFractionalParts.append(TOKENS_WHOLE[0]);
+        
+        return wordBetweenIntegerAndFractionalParts.append(TOKENS_WHOLE[1]);
     }
 
     private static StringBuilder choicePartWord(BigInteger number, int numberOfDigits){
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder fractionalSize = new StringBuilder();
 
-
-
-        if (number.divide(BigInteger.valueOf(10)).intValue() == 1) {
-            stringBuilder.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
-            return stringBuilder.append("ых");
-        } else if (number.mod(BigInteger.valueOf(10)).intValue() == 1) {
-            stringBuilder.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
-            return stringBuilder.append("ая");
+        if (number.divide(BigInteger.TEN).intValue() == 1) {
+            fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
+            return fractionalSize.append("ых");
+        } else if (number.mod(BigInteger.TEN).intValue() == 1) {
+            fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
+            return fractionalSize.append("ая");
         }
-
-        return stringBuilder.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]);
+        return fractionalSize.append(dataBaseOfWord.getArrDataBaseOfPartWord()[numberOfDigits]).append("ых");
     }
 
     private static void initDataBaseWord() throws IOException {
-        File fileWithTestData = new File("./src/main/resources/DataOfWords.json");
+        File fileWithWordData = new File("./src/main/resources/DataOfWords.json");
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        dataBaseOfWord = mapper.readValue(fileWithTestData, DataBaseOfWord.class);
+        dataBaseOfWord = mapper.readValue(fileWithWordData, DataBaseOfWord.class);
+    }
+
+    private static BigDecimal checkForMinus(BigDecimal number, StringBuilder minus){
+
+        if (number.compareTo(BigDecimal.valueOf(0)) < 0) {
+            minus.append("минус").append(" ");
+            number = number.multiply(BigDecimal.valueOf(-1));
+        }
+        return number;
+    }
+
+    private static void choiceOfWordsForIntegerAndFractionalParts(BigDecimal number, StringBuilder separatorWord, boolean isIntegerOrFractional){
+
+        int length = number.toBigInteger().bitCount();
+
+        BigInteger divideByOneHundred = number.toBigInteger().mod(BigInteger.valueOf(100));
+        
+        if(isIntegerOrFractional){
+            if (length < 3)
+                separatorWord.append(choiceWholeWord(number.toBigInteger())).append(" ");
+            else
+                separatorWord.append(choiceWholeWord(divideByOneHundred)).append(" ");
+        } else {
+            length = number.toString().length();
+            if (length < 3)
+                separatorWord.append(choicePartWord(number.toBigInteger(), length - 1)).append(" ");
+            else
+                separatorWord.append(choicePartWord(divideByOneHundred, length - 1)).append(" ");
+        }
+    }
+
+    private static BigDecimal preparingANumberForFractionalProcessing(BigDecimal number){
+
+        number = number.stripTrailingZeros();
+        number = number.remainder(BigDecimal.ONE);
+        int length = number.scale();
+        number = number.movePointRight(length);
+
+        return number;
     }
 }

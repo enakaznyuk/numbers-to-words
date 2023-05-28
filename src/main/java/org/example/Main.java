@@ -51,18 +51,17 @@ public class Main {
         while (bigDecimal.compareTo(BigDecimal.valueOf(0)) != 0){
             bigDecimal = scanner.nextBigDecimal();
             RuleBasedNumberFormat nf = new RuleBasedNumberFormat(Locale.forLanguageTag("ru"), RuleBasedNumberFormat.SPELLOUT);
-            LOGGER.info(nf.format(bigDecimal));
+            //LOGGER.info(nf.format(bigDecimal));
             LOGGER.info(NumberStringBuilder.secondAlgorithm(bigDecimal));
         }
         //LOGGER.info(NumberStringBuilder.secondAlgorithm(bigDecimal));
         //LOGGER.info(NumberStringBuilder.firstAlgorithm((int) pages));
 
         /*
-        1. Алгоритм ограничен типом int (MAX_INT = 2'147'483'647) и даже 10^9, нельзя передать ноль и отрицательное число, хотя в условиях этих ограничений нет. Первое условие ТЗ не соблюдено.
         2. В тестах в assertEquals спутаны параметры expected и actual result.
         3. Формат файла с тестовыми данными неудобен: я должен в одном поле вставить число, в другом поле найти ту же позицию и вставить ожидаемый результат. Переделать в табличный вид или хотя бы в массив ключ-значение.
         4. В коде оставлен мусор в виде тестирования результатов работы библиотеки icu4j.
-        5. Неверное именование переменных в методах initDataBaseWord(), separatorWord() (класса BigDigitBuilderFirstAlgorithm).
+        5. Неверное именование переменных в методах separatorWord() (класса BigDigitBuilderFirstAlgorithm).
         6. Спагетти-код в методе separationAlgorithmSecond(). Очень сложно читаемый код.
         7. Из-за искусственного ограничения в 1 миллиард - скудный словарь.
         */
